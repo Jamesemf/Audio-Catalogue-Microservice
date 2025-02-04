@@ -90,7 +90,7 @@ class Testing(unittest.TestCase):
         with open("Short/_good 4 u.wav", "rb") as fragment:
             encoded_fragment = base64.b64encode(fragment.read()).decode("utf-8")
             hdrs = {"Content-Type":"application/json"}
-            js = {"name":None,"file": encoded_fragment}
+            js = {"file": encoded_fragment}
             rsp = requests.post(f'{catalogue}/convert', headers=hdrs, json=js)
             
             self.assertEqual(rsp.status_code, 200)

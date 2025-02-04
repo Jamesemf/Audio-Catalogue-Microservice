@@ -97,7 +97,7 @@ def list():
     return js, 200 # ok
 
 @app.route("/catalogue/convert", methods=["POST"])
-def endpoint():
+def convert():
     """
     Identifies a song from an audio fragment and returns the track details.
     
