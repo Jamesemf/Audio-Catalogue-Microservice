@@ -1,0 +1,4 @@
+*.wav
+*.db
+.ignore
+*.pyc
