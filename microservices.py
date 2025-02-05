@@ -46,7 +46,7 @@ def Add(name):
         return "" ,400 # Bad Request
     
 @app.route("/catalogue/<string:name>", methods=["GET"])
-def get(name):
+def Get(name):
     """
     Retrieves a track by name.
     
@@ -62,7 +62,7 @@ def get(name):
 
     
 @app.route("/catalogue/<string:name>", methods=["DELETE"])
-def remove(name):
+def Remove(name):
     """
     Deletes a track from the catalogue.
     
@@ -80,7 +80,7 @@ def remove(name):
     return "",500 # Internal server error
     
 @app.route("/catalogue", methods=["GET"])
-def list():
+def List():
     """
     Lists all tracks in the catalogue.
     
@@ -97,7 +97,7 @@ def list():
     return js, 200 # ok
 
 @app.route("/catalogue/convert", methods=["POST"])
-def convert():
+def Convert():
     """
     Identifies a song from an audio fragment and returns the track details.
     
@@ -127,7 +127,7 @@ def convert():
     else:
         return "",400 # Bad Request
 
-def solve_song(fragment):
+def Solve_song(fragment):
     """
     Sends an audio fragment to audd API for song recognition.
     
@@ -147,12 +147,12 @@ def solve_song(fragment):
     response = requests.post(URI, data=data).json()
     return response.get('result', {}).get('title')  # Prevents crashes
 
-def launcher():
+def Launcher():
     global repo
     repo = sqlite.Catalogue("catalogue")
     app.run(host="localhost", port=3000)
 
 if __name__ == "__main__":
-    launcher()
+    Launcher()
     
 
