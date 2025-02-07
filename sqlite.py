@@ -55,8 +55,15 @@ class Catalogue:
       )
       connection.commit()
       return cursor.rowcount > 0        
-
-
+    
+  def clear(self):
+    with sqlite3.connect(self.database) as connection:
+      cursor = connection.cursor()
+      cursor.execute(
+        f" DELETE FROM tracks"
+    )
+    connection.commit()
+  
   def list(self):
     with sqlite3.connect(self.database) as connection:
       cursor = connection.cursor()

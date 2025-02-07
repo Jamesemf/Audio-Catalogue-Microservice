@@ -1,16 +1,9 @@
-import requests
-import base64
 import model
-import os
 import sqlite
-import json
 from flask import Flask, request
 
-
-KEY = os.environ["AUDD_KEY"]
-URI = "https://api.audd.io/"
-
 app = Flask(__name__)
+repo = sqlite.Catalogue("catalogue")
 
 @app.route("/catalogue/<string:name>", methods=["PUT"])
 def Add(name):
@@ -46,7 +39,7 @@ def Add(name):
         return "" ,400 # Bad Request
     
 @app.route("/catalogue/<string:name>", methods=["GET"])
-def Get(name):
+def FindTrack(name):
     """
     Retrieves a track by name.
     
@@ -96,63 +89,19 @@ def List():
     js += "]"
     return js, 200 # ok
 
-@app.route("/catalogue/convert", methods=["POST"])
-def Convert():
-    """
-    Identifies a song from an audio fragment and returns the track details.
+@app.route("/catalogue/cleardatabase", methods=["DELETE"])
+def Clear():
+    if repo.clear():
+        return "", 204
     
-    Request JSON:
-    {
-        "file": "<base64_encoded_audio>"
-    }
+    return "",500
 
-    Returns:
-        200 OK - Track found and returned.
-        404 Not Found - Track not in the catalogue.
-        500 Internal Server Error - Recognition failed.
-        400 Bad Request - Invalid request.
-    """
-    js = request.get_json()
-    fragment = js.get("file")
-    if fragment != None:
-        song_name = solve_song(fragment)
-        if song_name != None:
-            catalogue_song = repo.lookup(song_name)
-            if catalogue_song != None:
-                return {"name":catalogue_song.name, "file":catalogue_song.file}, 200
-            else:
-                return "", 404 # Not Found
-        else:
-            return "",500 # Internal Server Error
-    else:
-        return "",400 # Bad Request
-
-def Solve_song(fragment):
-    """
-    Sends an audio fragment to audd API for song recognition.
-    
-    Args:
-        fragment (str): Base64 encoded audio fragment.
-
-    Returns:
-        str: Recognized song title or None if recognition fails.
-    """
-
-    data = {
-        'api_token': KEY,
-        'audio': fragment,
-        'return': 'timecode'
-    }
-
-    response = requests.post(URI, data=data).json()
-    return response.get('result', {}).get('title')  # Prevents crashes
 
 def Launcher():
-    global repo
-    repo = sqlite.Catalogue("catalogue")
     app.run(host="localhost", port=3000)
 
 if __name__ == "__main__":
     Launcher()
     
+
 
