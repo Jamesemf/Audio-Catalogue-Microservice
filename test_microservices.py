@@ -47,7 +47,7 @@ class Testing(unittest.TestCase):
                 rsp = requests.put(f'{catalogue_admin}/{track["name"]}', headers=hdrs, json=js)
                 self.assertEqual(rsp.status_code, 201)
 
-    def test_02_add_existing_track(self):
+    def test_02_add_existing_track(self):   
         """Tests attempting to add a duplicate track."""
 
         database.db.clear()
@@ -83,7 +83,6 @@ class Testing(unittest.TestCase):
         
         self.assertEqual(rsp.status_code, 400)
 
-
     def test_05_list_tracks(self):
         """Tests listing all tracks."""
 
@@ -107,7 +106,6 @@ class Testing(unittest.TestCase):
         response = requests.get(f'{catalogue_admin}')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.text == '[]')
-
 
     def test_07_retrieve_track(self):
         """Tests retrieving an existing track by name."""
@@ -206,11 +204,10 @@ class Testing(unittest.TestCase):
 
         database.db.clear() # Clear the database
 
-        with open("_Davos.wav", "rb") as fragment:
-            encoded_fragment = None
-            js = {"name":None,"file": encoded_fragment}
-            rsp = requests.post(f'{audd_service}', headers=hdrs, json=js)
-            self.assertEqual(rsp.status_code, 400)
+        js = {"name":None,"file": None}
+        rsp = requests.post(f'{audd_service}', headers=hdrs, json=js)
+        self.assertEqual(rsp.status_code, 400)
+
 
 
 

@@ -19,8 +19,8 @@ def solveSong():
     }
 
     Returns:
-        200 OK - Track found and returned.
-        404 Not Found - Track not in the catalogue.
+        200 OK - Track found and returned.  (returned by get)
+        404 Not Found - Track not in the catalogue. (returned by get)
         500 Internal Server Error - Recognition failed.
         400 Bad Request - Invalid request.
     """
@@ -58,7 +58,13 @@ def Solve_song(fragment):
 
     response = requests.post(URI, data=data).json()
 
-    return response.get('result', {}).get('title')
+
+    if "error" in response:
+        error_code = response["error"].get("error_code", "N/A")
+        error_message = response["error"].get("error_message", "N/A")
+
+    else: 
+        return response.get('result', {}).get('title')
 
 def Launcher():
     app.run(host="localhost", port=3001)
