@@ -4,12 +4,12 @@ from flask import Flask, request
 
 KEY = os.environ["AUDD_KEY"]
 URI = "https://api.audd.io/"
-catalogue = "http://localhost:3000/catalogue"
+user_catalogue = "http://localhost:3002/catalogue"
 
 app = Flask(__name__)
 
-@app.route("/resolver", methods=["POST"])
-def Resolve():
+@app.route("/audd", methods=["POST"])
+def solveSong():
     """
     Identifies a song from an audio fragment and returns the track details.
     
@@ -29,8 +29,11 @@ def Resolve():
     if fragment != None:
         song_name = Solve_song(fragment)
         if song_name != None:
-            catalogue_song = requests.get(f'{catalogue}/{song_name}')
-            return catalogue_song.json(), catalogue_song.status_code
+            catalogue_song = requests.get(f'{user_catalogue}/{song_name}')
+            if catalogue_song.text != "":
+                return catalogue_song.json(), catalogue_song.status_code
+            else:
+                return "", catalogue_song.status_code
         else:
             return "",500 # Internal Server Error
     else:
@@ -54,8 +57,8 @@ def Solve_song(fragment):
     }
 
     response = requests.post(URI, data=data).json()
-    title = response.get('result', {}).get('title')
-    return title  # Prevents crashes
+
+    return response.get('result', {}).get('title')
 
 def Launcher():
     app.run(host="localhost", port=3001)

@@ -1,12 +1,11 @@
 import model
-import sqlite
+import database
 from flask import Flask, request
 
-app = Flask(__name__)
-repo = sqlite.Catalogue("catalogue")
 
+app = Flask(__name__)
 @app.route("/catalogue/<string:name>", methods=["PUT"])
-def Add(name):
+def AddTrack(name):
     """
     Adds a new track to the catalogue.
     
@@ -28,34 +27,18 @@ def Add(name):
 
     if name2 != None and file != None and name == name2:
         track = model.Track(name,file)
-        if repo.lookup(name) != None:
+        if database.db.lookup(name) != None:
                 return "" ,403 # Already exists
         else:
-            if repo.insert(track):
+            if database.db.insert(track):
                 return "" ,201 # Created
             else:
                 return "" ,500 # Internal Server Error
     else:
         return "" ,400 # Bad Request
-    
-@app.route("/catalogue/<string:name>", methods=["GET"])
-def FindTrack(name):
-    """
-    Retrieves a track by name.
-    
-    Returns:
-        200 OK - Track found.
-        404 Not Found - Track does not exist.
-    """
-    track = repo.lookup(name)
-    if track != None:
-            return {"name":track.name, "file":track.file}, 200 # OK
-    else:
-        return "", 404 # Not Found
-
-    
+        
 @app.route("/catalogue/<string:name>", methods=["DELETE"])
-def Remove(name):
+def RemoveTrack(name):
     """
     Deletes a track from the catalogue.
     
@@ -64,23 +47,26 @@ def Remove(name):
         404 Not Found - Track does not exist.
         500 Internal Server Error - Database error.
     """
-    if not repo.lookup(name):
+    if not database.db.lookup(name):
         return "", 404 # Not Found
     
-    if repo.delete(name):
+    if database.db.delete(name):
         return "",204 # No Content
     
     return "",500 # Internal server error
     
 @app.route("/catalogue", methods=["GET"])
-def List():
+def ListTracks():
     """
     Lists all tracks in the catalogue.
     
     Returns:
         200 OK - List of track names in JSON format.
     """
-    names = repo.list()
+    names = database.db.list()
+    if names == None:
+        return "", 500 # Internal server error
+    
     size = len(names)
     js = "["
     for n, name in enumerate(names):
@@ -88,13 +74,6 @@ def List():
         if n < size - 1 : js += ","
     js += "]"
     return js, 200 # ok
-
-@app.route("/catalogue/cleardatabase", methods=["DELETE"])
-def Clear():
-    if repo.clear():
-        return "", 204
-    
-    return "",500
 
 
 def Launcher():
