@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from Catalogue import catalogue
+from catalogue import catalogue
 
 app = Flask(__name__)
 
