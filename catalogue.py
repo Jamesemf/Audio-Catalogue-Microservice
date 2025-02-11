@@ -1,5 +1,16 @@
-import model
 import sqlite3
+
+class Track:
+    """
+    Represents a track in the catalogue.
+    
+    Attributes:
+        name (str): The name of the track.
+        file (bytes): The audio file in binary format.
+    """
+    def __init__(self,name,file):
+        self.name = name
+        self.file = file
 
 class Catalogue:
   def __init__(self,name):
@@ -11,30 +22,21 @@ class Catalogue:
         "(name TEXT PRIMARY KEY, file BLOB)"
       )
       connection.commit()
-  
-  
-  def update(self, track):
+
+  def add_track(self, name, file):
     with sqlite3.connect(self.database) as connection:
       cursor = connection.cursor()
-      cursor.execute(
-        "UPDATE tracks SET file=? WHERE name=?",
-        (track.file,track.name)
-      )
-      connection.commit()
-      return cursor.rowcount
+      try:
+        cursor.execute(
+          "INSERT INTO tracks (name,file) VALUES (?,?)",
+          (name, file)
+        )
+        connection.commit()
+        return True
+      except sqlite3.IntegrityError:
+        return False
 
-
-  def insert(self, track):
-    with sqlite3.connect(self.database) as connection:
-      cursor = connection.cursor()
-      cursor.execute(
-        "INSERT INTO tracks (name,file) VALUES (?,?)",
-        (track.name,track.file)
-      )
-      connection.commit()
-      return cursor.rowcount
-
-  def lookup(self,name):
+  def retrieve_track(self,name):
     with sqlite3.connect(self.database) as connection:
       cursor = connection.cursor()
       cursor.execute(
@@ -42,11 +44,12 @@ class Catalogue:
         (name,)
       )
       row = cursor.fetchone()
-      if row: return model.Track(row[0],row[1])
-      else: return None
+      if row: 
+        return {'name': row[0], 'file': row[1]}
+      else: 
+        return None
 
-
-  def delete(self,name):
+  def delete_track(self,name):
     with sqlite3.connect(self.database) as connection:
       cursor = connection.cursor()
       cursor.execute(
@@ -64,8 +67,12 @@ class Catalogue:
     )
     connection.commit()
   
-  def list(self):
+  def list_tracks(self):
     with sqlite3.connect(self.database) as connection:
       cursor = connection.cursor()
       cursor.execute("SELECT * FROM tracks")
-      return [row[0] for row in cursor.fetchall()]
+      tracks = cursor.fetchall()
+      return [row[0] for row in tracks] if tracks else []
+
+
+catalogue = Catalogue("Shamzam")
