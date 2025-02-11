@@ -36,18 +36,15 @@ class Catalogue:
       except sqlite3.IntegrityError:
         return False
 
-  def retrieve_track(self,name):
+  def retrieve_track(self, name):
     with sqlite3.connect(self.database) as connection:
-      cursor = connection.cursor()
-      cursor.execute(
-        "SELECT name, file FROM tracks WHERE name=?",
-        (name,)
-      )
-      row = cursor.fetchone()
-      if row: 
-        return {'name': row[0], 'file': row[1]}
-      else: 
-        return None
+        cursor = connection.cursor()
+        cursor.execute(
+            "SELECT name, file FROM tracks WHERE name LIKE ?",
+            (f"%{name}%",)
+        )
+        row = cursor.fetchone()
+        return {'name': row[0], 'file': row[1]} if row else None
 
   def delete_track(self,name):
     with sqlite3.connect(self.database) as connection:
@@ -75,4 +72,4 @@ class Catalogue:
       return [row[0] for row in tracks] if tracks else []
 
 
-catalogue = Catalogue("Shamzam")
+catalogue_db = Catalogue("Shamzam")
