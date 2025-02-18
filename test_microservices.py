@@ -83,7 +83,7 @@ class TestUserStoryTwo(unittest.TestCase):
                 js = {"file": encoded_track}
                 requests.put(f'{SHAMZAM}/add_track', headers=hdrs, json=js)
 
-                list_response = requests.get(f'{SHAMZAM}')
+                list_response = requests.get(f'{SHAMZAM}/list_tracks')
 
                 delete_response = requests.delete(f'{SHAMZAM}/remove_track/{list_response.json()[0]}')
                 self.assertEqual(delete_response.status_code, 204)

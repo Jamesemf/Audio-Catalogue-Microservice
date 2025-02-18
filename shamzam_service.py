@@ -6,7 +6,7 @@ AUDIO_RECOGNITION_SERVICE_URL = 'http://localhost:3002/audio_recognition'
 
 app = Flask(__name__)
 @app.route("/shamzam/add_track", methods=["PUT"])
-def AddTrack():
+def addTrack():
     """
     Adds a new track to the catalogue.
     
@@ -50,7 +50,7 @@ def AddTrack():
     
         
 @app.route("/shamzam/remove_track/<string:name>", methods=["DELETE"])
-def RemoveTrack(name):
+def removeTrack(name):
     """
     Deletes a track from the catalogue.
     
@@ -67,7 +67,7 @@ def RemoveTrack(name):
     return jsonify({'message': 'Internal server error'}), 500
     
 @app.route("/shamzam/list_tracks", methods=["GET"])
-def ListTracks():
+def listTracks():
     """
     Lists all tracks in the catalogue.
     
@@ -82,7 +82,7 @@ def ListTracks():
     return jsonify({'message': 'Internal server error'}), 500
     
 @app.route("/shamzam/retrieve_track/<string:name>", methods=["GET"])
-def RetrieveTrack(name):
+def retrieveTrack(name):
     """
     Retrieves a track by name.
     
