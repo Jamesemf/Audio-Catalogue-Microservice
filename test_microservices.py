@@ -85,7 +85,7 @@ class TestUserStoryTwo(unittest.TestCase):
 
                 list_response = requests.get(f'{SHAMZAM}')
 
-                delete_response = requests.delete(f'{SHAMZAM}/{list_response.json()[0]}')
+                delete_response = requests.delete(f'{SHAMZAM}/remove_track/{list_response.json()[0]}')
                 self.assertEqual(delete_response.status_code, 204)
                 
     # ----------------Unhappy case---------------
@@ -94,7 +94,7 @@ class TestUserStoryTwo(unittest.TestCase):
     
         catalogue.catalogue_db.clear()
 
-        delete_response = requests.delete(f'{SHAMZAM}/whistle')
+        delete_response = requests.delete(f'{SHAMZAM}/remove_track/whistle')
         self.assertEqual(delete_response.status_code, 404)
 
 
@@ -103,7 +103,7 @@ class TestUserStoryTwo(unittest.TestCase):
     
         catalogue.catalogue_db.clear()
 
-        delete_response = requests.delete(f'{SHAMZAM}/')
+        delete_response = requests.delete(f'{SHAMZAM}/remove_track/')
         self.assertEqual(delete_response.status_code, 404)
 
 class TestUserStoryThree(unittest.TestCase):
@@ -120,7 +120,7 @@ class TestUserStoryThree(unittest.TestCase):
                 js = {"file": encoded_track}
                 requests.put(f'{SHAMZAM}/add_track', headers=hdrs, json=js)
 
-        response = requests.get(f'{SHAMZAM}')
+        response = requests.get(f'{SHAMZAM}/list_tracks')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(x['name'] in response.text for x in tracks)
 
@@ -130,7 +130,7 @@ class TestUserStoryThree(unittest.TestCase):
 
         catalogue.catalogue_db.clear()
 
-        response = requests.get(f'{SHAMZAM}')
+        response = requests.get(f'{SHAMZAM}/list_tracks')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), [])
 

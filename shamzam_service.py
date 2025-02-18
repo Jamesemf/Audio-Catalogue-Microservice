@@ -49,7 +49,7 @@ def AddTrack():
     return jsonify({'message': 'Internal server error'}), 500
     
         
-@app.route("/shamzam/<string:name>", methods=["DELETE"])
+@app.route("/shamzam/remove_track/<string:name>", methods=["DELETE"])
 def RemoveTrack(name):
     """
     Deletes a track from the catalogue.
@@ -66,7 +66,7 @@ def RemoveTrack(name):
 
     return jsonify({'message': 'Internal server error'}), 500
     
-@app.route("/shamzam", methods=["GET"])
+@app.route("/shamzam/list_tracks", methods=["GET"])
 def ListTracks():
     """
     Lists all tracks in the catalogue.
@@ -81,7 +81,7 @@ def ListTracks():
 
     return jsonify({'message': 'Internal server error'}), 500
     
-@app.route("/shamzam/<string:name>", methods=["GET"])
+@app.route("/shamzam/retrieve_track/<string:name>", methods=["GET"])
 def RetrieveTrack(name):
     """
     Retrieves a track by name.
