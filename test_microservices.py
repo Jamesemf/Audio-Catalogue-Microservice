@@ -42,7 +42,7 @@ class TestUserStoryOne(unittest.TestCase):
                 js = {"file": encoded_track}
                 response = requests.put(f'{SHAMZAM}/add_track', headers=hdrs, json=js)
                 self.assertEqual(response.status_code, 201)
-                self.assertTrue('name' in response.json)
+                self.assertTrue('name' in response.json())
 
     #----------------Unhappy case---------------
     def test_add_duplicate_track(self):   
