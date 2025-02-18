@@ -39,7 +39,10 @@ def AddTrack():
 
     # Add the recognized track to the catalogue
     response = requests.post(f'{CATALOGUE_SERVICE_URL}/add_track', json=combined)
-    
+
+    if response.status_code == 201:
+        return jsonify({'name':track_name}), 201
+
     if response != None:
         return '', response.status_code
     

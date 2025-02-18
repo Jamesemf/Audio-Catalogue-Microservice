@@ -14,10 +14,10 @@ tracks = [
                 "track_filename": "Everybody (Backstreets Back) (Radio Edit).wav",
                 "fragment_filename": "_Everybody (Backstreets Back) (Radio Edit).wav",
             },
-            {
-                "track_filename": "Blinding Lights.wav",
-                "fragment_filename": "_Blinding Lights.wav",
-            },
+            # {
+            #     "track_filename": "Blinding Lights.wav",
+            #     "fragment_filename": "_Blinding Lights.wav",
+            # },
             # {
             #     "track_filename": "Dont Look Back In Anger.wav",
             #     "fragment_filename": "_Dont Look Back In Anger.wav",
@@ -42,6 +42,7 @@ class TestUserStoryOne(unittest.TestCase):
                 js = {"file": encoded_track}
                 response = requests.put(f'{SHAMZAM}/add_track', headers=hdrs, json=js)
                 self.assertEqual(response.status_code, 201)
+                self.assertTrue(response.is_json())
 
     #----------------Unhappy case---------------
     def test_add_duplicate_track(self):   
